@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'my_drawer.dart';
+import 'list_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,6 +63,16 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Widget redBox = const DecoratedBox(
+    decoration: BoxDecoration(color: Colors.red),
+  );
+
+  final Widget _avatarIcon = Image.network(
+    "https://avatars2.githubusercontent.com/u/20411648?s=460&v=4",
+    width: 80.0,
+    height: 80.0,
+  );
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -74,10 +86,19 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        leading: Builder(builder: (context) {
+          return IconButton(
+              icon: const Icon(Icons.dashboard),
+              onPressed: () {
+                // 打开抽屉
+                Scaffold.of(context).openDrawer();
+              });
+        }),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
+
         child: Column(
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
@@ -93,14 +114,159 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'You have pushed the button this many times: this is too looooooooooong',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
+            ),
+            ConstrainedBox(
+              // 约束 控制子视图
+              constraints: const BoxConstraints(
+                minHeight: 50.0,
+                minWidth: double.infinity,
+              ),
+              child: SizedBox(
+                height: 5,
+                child: redBox,
+              ),
+            ),
+            ConstrainedBox(
+              // 约束 控制子视图
+              constraints: const BoxConstraints.tightFor(
+                width: 100,
+                height: 100,
+              ),
+              child: Container(
+                // margin: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(10.0),
+                height: 5,
+                child: redBox,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // verticalDirection: VerticalDirection.down,
+              children: const <Widget>[
+                Text(
+                  "Hello Word!",
+                  style: TextStyle(fontSize: 30.0),
+                ),
+                SizedBox(
+                  width: 200,
+                  child: Text(
+                    // 文字超长了，会出现问题 //
+                    "I am Alan, from China, this is a test and I have many things to say.",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            Wrap(
+              // 流式布局，row这种只会是一行，text超长之后不会换行
+              spacing: 30, // 主轴（row）方向间距
+              runSpacing: 10, // 纵轴（垂直）方向
+              alignment: WrapAlignment.start,
+              crossAxisAlignment: WrapCrossAlignment.end,
+              children: const <Widget>[
+                Text(
+                  "Hello Word!",
+                  style: TextStyle(fontSize: 30.0),
+                ),
+                Text(
+                  "Hello Flutter!",
+                  style: TextStyle(fontSize: 20.0),
+                ),
+                Text(
+                    // 文字超长了，会出现问题 //
+                    "I am Alan, from China, this is a test and I have many things to say.",
+                    maxLines: 2),
+              ],
+            ),
+            Padding(
+              // Flex 布局
+              padding: const EdgeInsets.all(20.0),
+              child: Flex(
+                // Row、Column都继承自Flex，单独使用Flex需要指定direction
+                direction: Axis.horizontal,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        height: 30,
+                        color: Colors.black,
+                      )),
+                  const Spacer(
+                    flex: 1,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        height: 30,
+                        color: Colors.red,
+                      )),
+                  const Spacer(
+                    // 间隙
+                    flex: 1,
+                  ),
+                  Expanded(
+                      flex: 2,
+                      child: Container(
+                        height: 30,
+                        color: Colors.green,
+                      )),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _avatarIcon,
+                ClipOval(child: _avatarIcon), // 圆形
+                ClipRRect(
+                  // 圆角
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: _avatarIcon,
+                ),
+                ClipRect(
+                  child: Align(
+                    // 设置裁剪 宽高 裁剪方向
+                    child: _avatarIcon,
+                    widthFactor: .5, // 宽高为原来的一半
+                    heightFactor: .5,
+                    alignment: Alignment.topRight,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                OutlinedButton(
+                    child: const Text("list view1"),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => const MyListView()),
+                      );
+                    }),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => const MyListView()),
+                      );
+                    },
+                    child: const Text("text button"))
+              ],
             ),
           ],
         ),
@@ -109,7 +275,45 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: _bottomBar2,
+      drawer:
+          const MyDrawer(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  final BottomNavigationBar _bottomBar1 = BottomNavigationBar(
+    // 底部 tab bar
+    items: const <BottomNavigationBarItem>[
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
+      BottomNavigationBarItem(icon: Icon(Icons.business), label: "bussiness"),
+      BottomNavigationBarItem(icon: Icon(Icons.school), label: "school"),
+    ],
+    selectedItemColor: Colors.red,
+    unselectedItemColor: Colors.blue,
+    onTap: (index) {
+      // ignore: avoid_print
+      print("clicked index = $index");
+    },
+  );
+
+  final BottomAppBar _bottomBar2 = BottomAppBar(
+    color: Colors.white,
+    shape: const CircularNotchedRectangle(), // 圆形
+    child: Row(
+      children: const [
+        IconButton(
+          icon: Icon(Icons.home),
+          onPressed: null,
+        ),
+        SizedBox(),
+        IconButton(
+          icon: Icon(Icons.business),
+          onPressed: null,
+        ),
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+    ),
+  );
 }
