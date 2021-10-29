@@ -9,7 +9,7 @@ class MyListView extends StatefulWidget {
 
 class _MyListViewState extends State<MyListView> {
   // int _count;
-  ScrollController _controller = ScrollController();
+  final ScrollController _controller = ScrollController();
   bool _showToTopBtn = false;
   @override
   void initState() {
