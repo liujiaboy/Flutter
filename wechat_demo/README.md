@@ -1,6 +1,6 @@
 # wechat_demo
 
-A new Flutter project.
+wechat demo test
 
 ## Getting Started
 
