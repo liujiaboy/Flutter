@@ -191,6 +191,6 @@ class _FriendsCell extends StatelessWidget {
           ),
         ],
       ),
-    );;
+    );
   }
 }
