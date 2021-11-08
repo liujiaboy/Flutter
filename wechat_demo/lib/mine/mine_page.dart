@@ -120,7 +120,7 @@ class _MinePageState extends State<MinePage> {
       return itemHeaderBuild();
     }
     else {
-      return DiscoverCell(title: "支付 ${index}", imageName: "images/shop.png");
+      return DiscoverCell(title: "支付 $index", imageName: "images/shop.png");
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wechat_demo/discover/discover_child_page.dart';
 
+// ignore: must_be_immutable
 class DiscoverCell extends StatefulWidget {
   // const DiscoverCell({Key? key}) : super(key: key);
   final String title;
