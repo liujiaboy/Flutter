@@ -14,15 +14,24 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   int _currentIndex = 0;
   List<Widget> _pages = [ChatPage(), FriendsPage(), DiscoverPage(), MinePage()];
+  PageController _controller = PageController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: PageView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: _controller,
+        children: _pages,
+        onPageChanged: (int index) {
+          _currentIndex = index;
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index){
           setState(() {
             _currentIndex = index;
+            _controller.jumpToPage(_currentIndex);
           });
         },
         selectedFontSize: 12.0,
