@@ -98,36 +98,48 @@ class _ChatPageState extends State<ChatPage> {
         ],
       ),
       body: Container(
-        child: FutureBuilder(
-          future: getDatas(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            List<ChatModel>? chatArray = snapshot.data;
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Text("加载中"),
-              );
-            }
-            if (chatArray == null) {
-              Container();
-            }
-            return ListView(
-              children: chatArray!.map((item) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    child: item.iconUrl != null
-                        ? Image(image: NetworkImage(item.iconUrl!))
-                        : null,
-                  ),
-                  title: item.name != null ? Text(item.name!) : Text(""),
-                  subtitle:
-                      item.message != null ? Text(item.message!) : Text(""),
-                );
-              }).toList(),
-            );
-            // print("data = ${snapshot.data}");
-          },
-        ),
+        child: _buildFutureWidget(context),
       ),
+    );
+  }
+
+  // 根据future数据创建 widget
+  Widget _buildFutureWidget(BuildContext context) {
+    return FutureBuilder(
+      future: getDatas(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        List<ChatModel>? chatArray = snapshot.data;
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: Text("加载中"),
+          );
+        }
+        if (chatArray == null) {
+          Container();
+        }
+        return ListView(
+          children: chatArray!.map((item) {
+            return ListTile(
+              leading: item.iconUrl != null
+                  ? Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    image: DecorationImage(image: NetworkImage(item.iconUrl!))
+                ),
+              )
+                  : Container(),
+              title: item.name != null ? Text(item.name!) : Text(""),
+              subtitle:
+              item.messageDetail != null
+                  ? Text(item.messageDetail!, maxLines: 1, overflow: TextOverflow.ellipsis,)
+                  : Text(""),
+            );
+          }).toList(),
+        );
+        // print("data = ${snapshot.data}");
+      },
     );
   }
 }
