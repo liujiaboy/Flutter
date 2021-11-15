@@ -64,7 +64,7 @@ class _ChatPageState extends State<ChatPage>
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(6),
                 image: DecorationImage(image: NetworkImage(item.iconUrl!))
               ),
             )
