@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:wechat_demo/chat/search_cell.dart';
 import 'package:wechat_demo/const.dart';
+import 'package:wechat_demo/tools/http_manager.dart';
+import 'package:wechat_demo/tools/network_error.dart';
 // import 'package:http/http.dart' as http;
 
 import 'chat_model.dart';
@@ -18,15 +21,25 @@ class _ChatPageState extends State<ChatPage>
   List<ChatModel> _dataList = [];
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 
+  // var _timer;
+  @override
+  void dispose() {
+    super.dispose();
+
+  }
 
   @override
   void initState() {
     super.initState();
 
-    getHttpData();
+    // _timer = Timer(Duration(seconds: 1), (){
+    // });
+    
+    // getHttpData();
 
+    getHttpRequest();
     // 之前的Future请求
     // getDatas().then((value) {
     //   // print(value);
@@ -34,12 +47,40 @@ class _ChatPageState extends State<ChatPage>
   }
 
   // 网络请求
+  void getHttpRequest() async {
+    HttpManager.shared.get("http://rap2api.taobao.org/app/mock/293294/api/chat/chat_list").then((value) {
+      value.fold(
+            (left) {
+                print(left.message ?? NetworkError.CommonErrorMessage);
+              },
+              (right) {
+                if (right != null) {
+                  List responseList = right["data"]["list"];
+                  // 获取model
+                  List<ChatModel> modelList = responseList.map((e) {
+                    return ChatModel.fromMap(e);
+                  }).toList();
+
+                  setState(() {
+                    _dataList = modelList;
+                  });
+                }
+            },
+      );
+    }).whenComplete(() {
+      print("request complete...");
+    }).catchError((e){
+      print("catch error...");
+      print(NetworkError.CommonErrorMessage);
+    });
+  }
+
   void getHttpData() async {
     try {
       var response = await Dio().get("http://rap2api.taobao.org/app/mock/293294/api/chat/chat_list");
       print(response.statusCode);
       if (response.data is Map) {
-        List responseList = response.data["array"];
+        List responseList = response.data["data"]["list"];
         // 获取model
         List<ChatModel> modelList = responseList.map((e) {
           return ChatModel.fromMap(e);
@@ -54,10 +95,15 @@ class _ChatPageState extends State<ChatPage>
       // print(response);
     } catch (e) {
       print(e);
+      print("eeeeeeeee...");
     }
   }
 
-  Widget _buildItem(BuildContext context, int index, ChatModel item) {
+  Widget _buildItem(BuildContext context, int index) {
+    if (index == 0) {
+      return SearchCell(_dataList);
+    }
+    ChatModel item = _dataList[index-1];
     return ListTile(
       leading: item.iconUrl != null
           ? Container(
@@ -77,14 +123,17 @@ class _ChatPageState extends State<ChatPage>
     );
   }
   Widget _buildBody(BuildContext context) {
-    return _dataList.length == 0
-        ? Center(child: Text("Loading..."),)
-        : ListView.builder(
-            itemCount: _dataList.length,
-      itemBuilder: (BuildContext context, int index) {
-              return _buildItem(context, index, _dataList[index]);
-      },
-    );
+    if (_dataList.length == 0) {
+      return Center(child: Text("Loading..."),);
+    }
+    else {
+      return ListView.builder(
+        itemCount: _dataList.length + 1,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildItem(context, index);
+        },
+      );
+    }
   }
 
   @override
@@ -92,6 +141,7 @@ class _ChatPageState extends State<ChatPage>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
+        elevation: 0.0,
         backgroundColor: WeChatThemeColor,
         title: Text("微信"),
         centerTitle: true,
