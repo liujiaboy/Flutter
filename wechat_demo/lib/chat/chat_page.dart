@@ -122,16 +122,22 @@ class _ChatPageState extends State<ChatPage>
           : Text(""),
     );
   }
+
+  Widget _buildSeparator(BuildContext context, int index) {
+    return Divider(height: 1.0, color: WeChatThemeColor, indent: 80.0,);
+  }
+
   Widget _buildBody(BuildContext context) {
     if (_dataList.length == 0) {
       return Center(child: Text("Loading..."),);
     }
     else {
-      return ListView.builder(
+      return ListView.separated(
         itemCount: _dataList.length + 1,
         itemBuilder: (BuildContext context, int index) {
           return _buildItem(context, index);
         },
+        separatorBuilder: _buildSeparator,
       );
     }
   }
