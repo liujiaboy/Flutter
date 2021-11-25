@@ -1,12 +1,29 @@
-class ChatModel {
-  ChatModel(this.name, this.message, this.iconUrl, this.messageDetail);
+import 'package:json_annotation/json_annotation.dart';
 
-  final String? name;
-  final String? message;
-  final String? iconUrl;
-  final String? messageDetail;
+part 'chat_model.g.dart';
 
-  factory ChatModel.fromMap(Map map) {
-    return ChatModel(map["name"], map["message"], map["image_url"], map["message_detail"]);
-  }
+
+@JsonSerializable()
+class ChatModel extends Object {
+
+  @JsonKey(name: 'image_url')
+  String? imageUrl;
+
+  @JsonKey(name: 'name')
+  String? name;
+
+  @JsonKey(name: 'message')
+  String? message;
+
+  @JsonKey(name: 'message_detail')
+  String? messageDetail;
+
+  ChatModel(this.imageUrl,this.name,this.message,this.messageDetail,);
+
+  factory ChatModel.fromJson(Map<String, dynamic> srcJson) => _$ChatModelFromJson(srcJson);
+
+  Map<String, dynamic> toJson() => _$ChatModelToJson(this);
+
 }
+
+

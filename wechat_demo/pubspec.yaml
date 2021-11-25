@@ -28,7 +28,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   dio: ^4.0.3 #网络库
-  either_dart: ^0.1.4
+  either_dart: ^0.1.4 #left 错误数据, right 正确数据
+
+  # 1.已有json对象一键生成bean: https://caijinglong.github.io/json2dart/index.html
+  # 2.生成model对应的dart文件
+  # 3.使用命令：flutter packages pub run build_runner build 生成对应的【.g】文件
+  json_annotation: ^4.3.0 #与json_serializable、build_runner同时使用
 
   # 插件(Plugin)与包(Package)的主要区别： 有没有与原生交互
   # Plugin
@@ -39,6 +44,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.0.1 #Object和json转化
+  build_runner: ^2.1.5 #
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -58,7 +58,7 @@ class _ChatPageState extends State<ChatPage>
                   List responseList = right["data"]["list"];
                   // 获取model
                   List<ChatModel> modelList = responseList.map((e) {
-                    return ChatModel.fromMap(e);
+                    return ChatModel.fromJson(e);
                   }).toList();
 
                   setState(() {
@@ -78,12 +78,13 @@ class _ChatPageState extends State<ChatPage>
   void getHttpData() async {
     try {
       var response = await Dio().get("http://rap2api.taobao.org/app/mock/293294/api/chat/chat_list");
-      print(response.statusCode);
+
       if (response.data is Map) {
         List responseList = response.data["data"]["list"];
+        print(responseList);
         // 获取model
         List<ChatModel> modelList = responseList.map((e) {
-          return ChatModel.fromMap(e);
+          return ChatModel.fromJson(e);
         }).toList();
 
         setState(() {
@@ -94,8 +95,7 @@ class _ChatPageState extends State<ChatPage>
       // print(response.data is Map);
       // print(response);
     } catch (e) {
-      print(e);
-      print("eeeeeeeee...");
+      debugPrint(e.toString());
     }
   }
 
@@ -105,16 +105,16 @@ class _ChatPageState extends State<ChatPage>
     }
     ChatModel item = _dataList[index-1];
     return ListTile(
-      leading: item.iconUrl != null
+      leading: item.imageUrl != null
           ? Container(
               width: 44,
               height: 44,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
-                image: DecorationImage(image: NetworkImage(item.iconUrl!))
+                image: DecorationImage(image: NetworkImage(item.imageUrl!))
               ),
             )
-          : Container(),
+          : Container(width: 44, height: 44, color: WeChatThemeColor,),
       title: item.name != null ? Text(item.name!) : Text(""),
       subtitle:
       item.messageDetail != null

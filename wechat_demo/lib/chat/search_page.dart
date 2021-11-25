@@ -96,16 +96,16 @@ class _SearchPageState extends State<SearchPage> {
   Widget _itemBuilderForRow(BuildContext context, int index) {
     ChatModel item = _searchResultList[index];
     return ListTile(
-      leading: item.iconUrl != null
+      leading: item.imageUrl != null
           ? Container(
         width: 44,
         height: 44,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(6),
-            image: DecorationImage(image: NetworkImage(item.iconUrl!))
+            image: DecorationImage(image: NetworkImage(item.imageUrl!))
         ),
       )
-          : Container(),
+          : Container(width: 44, height: 44, color: WeChatThemeColor,),
       title: item.name != null ? _createTitle(item.name!) : Text(""),
       subtitle:
       item.messageDetail != null
