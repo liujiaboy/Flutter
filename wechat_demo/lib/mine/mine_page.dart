@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:wechat_demo/const.dart';
 import 'package:wechat_demo/discover/discover_cell.dart';
 
@@ -12,7 +14,7 @@ class MinePage extends StatefulWidget {
 class _MinePageState extends State<MinePage> {
 
   Color _bgColor = Color.fromRGBO(220, 220, 220, 0.6);
-
+  File? _avatarFile;
   @override
   Widget build(BuildContext context) {
     return MediaQuery.removePadding(
@@ -58,16 +60,16 @@ class _MinePageState extends State<MinePage> {
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // left icon
-                Container(
-                  // width: 100,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    child: Image.network(
-                      "https://avatars2.githubusercontent.com/u/20411648?s=460&v=4",
-                      width: 80,
-                      height: 80,
+                GestureDetector(
+                  child: Container(
+                    // width: 80,
+                    // height: 80,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: _avatarImage(),
                     ),
                   ),
+                  onTap: _imagePickerAction,
                 ),
                 SizedBox(width: 10,),
                 //  right
@@ -115,12 +117,54 @@ class _MinePageState extends State<MinePage> {
     );
   }
 
+  Widget _avatarImage() {
+    if (_avatarFile == null) {
+      return Image.network(
+        "https://avatars2.githubusercontent.com/u/20411648?s=460&v=4",
+        width: 80,
+        height: 80,
+      );
+    }
+    else {
+      return Image.file(
+        _avatarFile!,
+        fit: BoxFit.fill,
+        width: 80,
+        height: 80,
+      );
+    }
+  }
+
   Widget itemBuild(BuildContext context, int index) {
     if (index == 0) {
       return itemHeaderBuild();
     }
     else {
       return DiscoverCell(title: "支付 $index", imageName: "images/shop.png");
+    }
+  }
+
+  // 通过ImagePicker获取图片，需要现在info.plist中添加权限
+  void _imagePickerAction() async {
+    try {
+      XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      String? path = xFile?.path; //xFile != null ? xFile.path : "";
+      print("image path = $path");
+      if (path != null) {
+        setState(() {
+          _avatarFile = File(path);
+        });
+      }
+      else {
+        setState(() {
+          _avatarFile = null;
+        });
+        print("选择照片失败");
+      }
+    }
+    catch (e) {
+      print(e.toString());
+      print("选择照片失败 catch error...");
     }
   }
 }

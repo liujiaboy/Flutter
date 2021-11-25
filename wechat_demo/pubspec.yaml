@@ -30,6 +30,10 @@ dependencies:
   dio: ^4.0.3 #网络库
   either_dart: ^0.1.4
 
+  # 插件(Plugin)与包(Package)的主要区别： 有没有与原生交互
+  # Plugin
+  image_picker: ^0.8.4+4
+
 #  http: ^0.13.4
 
 dev_dependencies:
